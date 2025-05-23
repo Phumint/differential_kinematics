@@ -32,7 +32,7 @@ plt.subplots_adjust(bottom=0.3)
 
 #sliders
 axw = plt.axes([0.25, 0.2, 0.65, 0.03])
-w_slider = Slider(axw, 'w', 0, 50, valinit=0)
+w_slider = Slider(axw, 'w, max angular velocity', 0, 50, valinit=0)
 
 #reset button
 axreset = axwr = plt.axes([0.25, 0.1, 0.65, 0.03])
@@ -57,7 +57,7 @@ ax.autoscale(False)
 pose = RobotPose()
 dt = 0.01  # time step
 
-#kinematic equations
+#forward kinematic equations
 def x_position(wl, wr, wheel_radius, theta):
     return ((wheel_radius * wl) / 2 * np.cos(theta) + (wheel_radius * wr) / 2 * np.cos(theta))
 
