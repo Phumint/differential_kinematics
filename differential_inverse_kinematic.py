@@ -61,13 +61,6 @@ def reset(event):
     w_slider.reset()
     v_slider.reset()
 
-#forward kinematic equations
-def x_position(wl, wr, wheel_radius, theta):
-    return ((wheel_radius * wl) / 2 * np.cos(theta) + (wheel_radius * wr) / 2 * np.cos(theta))
-
-def y_position(wl, wr, wheel_radius, theta):
-    return ((wheel_radius * wl) / 2 * np.sin(theta) + (wheel_radius * wr) / 2 * np.sin(theta))
-
 #for animation
 def animate(frame):
     w = w_slider.val
@@ -81,9 +74,12 @@ def animate(frame):
     wr = vr/wheel_radius
 
     #forward kinematics to update robot's position
-    dx = x_position(wl, wr, wheel_radius, pose.theta) * dt
-    dy = y_position(wl, wr, wheel_radius, pose.theta) * dt
-    dtheta = (-(wheel_radius / s) * wl + (wheel_radius / s) * wr) * dt
+    v = wheel_radius * (wr + wl) / 2
+    omega = wheel_radius * (wr - wl) / s
+
+    dx = v * np.cos(pose.theta) * dt
+    dy = v * np.sin(pose.theta) * dt
+    dtheta = omega * dt
     
     pose.x += dx
     pose.y += dy
