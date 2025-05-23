@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib as mpl
+import keyboard
+import time
 from matplotlib.widgets import Slider, Button
 from matplotlib.animation import FuncAnimation
 from dataclasses import dataclass
@@ -29,10 +31,8 @@ fig, ax = plt.subplots()
 plt.subplots_adjust(bottom=0.3)
 
 #sliders
-axwl = plt.axes([0.25, 0.2, 0.65, 0.03])
-axwr = plt.axes([0.25, 0.15, 0.65, 0.03])
-wl_slider = Slider(axwl, 'wl', -10, 10, valinit=0)
-wr_slider = Slider(axwr, 'wr', -10, 10, valinit=0)
+axw = plt.axes([0.25, 0.2, 0.65, 0.03])
+w_slider = Slider(axw, 'w', 0, 50, valinit=0)
 
 #reset button
 axreset = axwr = plt.axes([0.25, 0.1, 0.65, 0.03])
@@ -65,13 +65,22 @@ def y_position(wl, wr, wheel_radius, theta):
     return ((wheel_radius * wl) / 2 * np.sin(theta) + (wheel_radius * wr) / 2 * np.sin(theta))
 
 def reset(event):
-    wl_slider.reset()
-    wr_slider.reset()
+    w_slider.reset()
 
 #for animation
 def animate(frame):
-    wl = wl_slider.val
-    wr = wr_slider.val
+    if keyboard.is_pressed('left'):
+        wl = -w_slider.val/2
+        wr = w_slider.val/2
+    elif keyboard.is_pressed('right'):
+        wl = w_slider.val/2
+        wr = -w_slider.val/2
+    elif keyboard.is_pressed('up'):
+        wl = wr = w_slider.val
+    elif keyboard.is_pressed('down'):
+        wl = wr = -w_slider.val
+    else: 
+        wl = wr = 0
 
     dx = x_position(wl, wr, wheel_radius, pose.theta) * dt
     dy = y_position(wl, wr, wheel_radius, pose.theta) * dt
