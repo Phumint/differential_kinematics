@@ -82,6 +82,7 @@ def animate(frame):
     else: 
         wl = wr = 0
 
+    #external forward kinematics equation
     dx = x_position(wl, wr, wheel_radius, pose.theta) * dt
     dy = y_position(wl, wr, wheel_radius, pose.theta) * dt
     dtheta = (-(wheel_radius / s) * wl + (wheel_radius / s) * wr) * dt
