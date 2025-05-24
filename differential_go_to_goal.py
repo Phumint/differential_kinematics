@@ -76,14 +76,24 @@ def animate(frame):
     angle_to_goal = np.arctan2(to_goal_dy, to_goal_dx)
     angle_difference = (angle_to_goal - pose.theta + np.pi) % (2 * np.pi) - np.pi  # normalize angle to [-pi, pi]
 
-    #proportional control 
-    v = kPlinear * euclidean_distance
-    w = kPangular * angle_difference
+    # thresholds
+    angle_threshold = 0.1  # radians (~5.7 degrees)
+    distance_threshold = 0.1  # stop when close enough
 
-    #change the float here for distance tolerance
-    if euclidean_distance < 0.1:
-        v = 0
-        w = 0
+    # default velocities
+    v = 0.0
+    w = 0.0
+
+    if euclidean_distance > distance_threshold:
+        if abs(angle_difference) > angle_threshold:
+            #rotate in place until it faces the target goal 
+            v = 0.0
+            w = kPangular * angle_difference
+        else:
+            #move forward after facing the goal
+            v = kPlinear * euclidean_distance
+            w = 0.0
+
 
     #inverse kinematics to compute wheel speeds
     wl = (2 * v - w * s) / (2 * wheel_radius)
